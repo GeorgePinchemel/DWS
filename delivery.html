@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Peça sua pizza Sottile online. Delivery rápido em Salvador."
+    />
+    <title>Delivery — Sottile Pizzaria</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages/delivery.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="index.html">
+          <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
+        </a>
+        <nav class="site-nav" aria-label="Principal">
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="area-entrega.html">Área de Entrega</a></li>
+            <li><a href="promocoes.html">Promoções</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="delivery.html" class="active">Delivery</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="container">
+        <div class="delivery-container">
+          <div class="menu-section">
+            <div class="category-nav">
+              <label for="category-select">O que você deseja hoje?</label>
+              <select id="category-select">
+                <option value="combos">🔥 Combos da Semana</option>
+                <option value="pizzas">🍕 Pizzas</option>
+                <option value="calzones">🥐 Calzones</option>
+                <option value="bebidas">🥤 Bebidas</option>
+              </select>
+            </div>
+
+            <div id="menu-items" class="menu-grid">
+              <!-- JS will inject items here -->
+            </div>
+          </div>
+
+          <aside class="order-sidebar">
+            <h2>Seu Pedido</h2>
+            <ul id="cart-items" class="cart-list">
+              <!-- JS will inject cart items -->
+            </ul>
+            <div class="cart-summary">
+              <div class="cart-total-row">
+                <span>Produtos:</span>
+                <span>R$ <span id="cart-subtotal">0.00</span></span>
+              </div>
+              <div class="cart-total-row">
+                <span>Frete:</span>
+                <span>R$ <span id="cart-shipping">10.00</span></span>
+              </div>
+              <div class="cart-total-row" style="border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;">
+                <span style="font-weight: 800;">Total:</span>
+                <span style="font-weight: 800; color: var(--color-accent);">R$ <span id="cart-total">10.00</span></span>
+              </div>
+              <button id="checkout-btn" class="btn btn--primary btn--block">Finalizar Pedido</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Floating Cart for Mobile -->
+      <div id="mobile-cart-bar" class="mobile-cart-bar" onclick="toggleCart()">
+        <span>🛒 <span id="mobile-cart-count">0</span> itens</span>
+        <span>Ver Carrinho</span>
+        <span id="mobile-cart-total">R$ 0.00</span>
+      </div>
+    </main>
+
+    <!-- Pizza Customization Modal -->
+    <div id="pizza-modal" class="modal">
+      <div class="modal-content">
+        <button onclick="hideCheckout()" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 2rem; cursor: pointer;">&times;</button>
+        <div id="pizza-options-content"></div>
+      </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+      <div class="modal-content">
+        <button id="close-modal" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+        <h2>Finalizar Pedido</h2>
+        
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+          <label for="delivery-address">Endereço de Entrega:</label>
+          <input type="text" id="delivery-address" class="custom-select" placeholder="Rua, Número, Bairro, Complemento" style="width: 100%; border: 1px solid #ddd;">
+        </div>
+
+        <div class="payment-options">
+          <label>Como deseja pagar?</label>
+          <div class="payment-type-group">
+            <div class="radio-group">
+              <input type="radio" id="payment-online" name="payment-type" value="online">
+              <label for="payment-online">Online</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" id="payment-delivery" name="payment-type" value="delivery">
+              <label for="payment-delivery">Na Entrega</label>
+            </div>
+          </div>
+
+          <div id="online-payment-options" class="payment-sub-options" style="display: none;">
+            <div class="radio-group">
+              <input type="radio" name="online-method" value="pix" id="online-pix">
+              <label for="online-pix">Pix</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" name="online-method" value="cartao" id="online-card">
+              <label for="online-card">Cartão de Crédito</label>
+            </div>
+          </div>
+
+          <div id="delivery-payment-options" class="payment-sub-options" style="display: none;">
+            <div class="radio-group">
+              <input type="radio" name="delivery-method" value="pix" id="del-pix">
+              <label for="del-pix">Pix</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" name="delivery-method" value="cartao" id="del-card">
+              <label for="del-card">Cartão (Maquininha)</label>
+            </div>
+            <div class="radio-group">
+              <input type="radio" name="delivery-method" value="dinheiro" id="del-cash">
+              <label for="del-cash">Dinheiro</label>
+            </div>
+          </div>
+        </div>
+        <button onclick="finalizeOrder()" class="btn btn--primary btn--block">Confirmar e Pagar</button>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <h3>Endereço</h3>
+            <address>
+              Rua General Labatut, 26<br />
+              Barris, Salvador - BA<br />
+              40070-100, Brasil
+            </address>
+          </div>
+          <div>
+            <h3>Contato</h3>
+            <p><a href="mailto:contato@sottilepizzaria.com.br">contato@sottilepizzaria.com.br</a></p>
+            <p><a href="tel:+5571987394519">+55 71 98739-4519</a></p>
+          </div>
+          <div>
+            <h3>Funcionamento</h3>
+            <p>Seg: Fechado</p>
+            <p>Ter a Dom: 17h às 23h</p>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <span>© Sottile — Todos os direitos reservados.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script src="js/delivery.js"></script>
+  </body>
+</html>

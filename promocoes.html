@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Promoções e Combos da Semana da Sottile Pizzaria." />
+    <title>Promoções — Sottile Pizzaria</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <style>
+      .promo-hero {
+        background: var(--color-accent);
+        color: white;
+        padding: 4rem 0;
+        text-align: center;
+        border-radius: 0 0 40px 40px;
+        margin-bottom: 3rem;
+      }
+      .promo-hero h1 { color: white; margin-bottom: 1rem; }
+      .promo-card {
+        background: white;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin-bottom: 2.5rem;
+        border: 1px solid #eee;
+      }
+      @media (max-width: 768px) {
+        .promo-card { grid-template-columns: 1fr; }
+      }
+      .promo-card__img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        min-height: 250px;
+      }
+      .promo-card__content {
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .promo-card__tag {
+        display: inline-block;
+        background: #fff0f0;
+        color: var(--color-accent);
+        padding: 5px 15px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        width: fit-content;
+      }
+      .promo-card h2 { margin-bottom: 1rem; font-size: 2rem; }
+      .promo-card p { font-size: 1.1rem; color: #666; margin-bottom: 2rem; }
+      .promo-card__price {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--color-accent);
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="index.html">
+          <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
+        </a>
+        <nav class="site-nav" aria-label="Principal">
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="area-entrega.html">Área de Entrega</a></li>
+            <li><a href="promocoes.html" aria-current="page">Promoções</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contato.html">Contato</a></li>
+            <li><a href="delivery.html">Delivery</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="promo-hero">
+        <div class="container">
+          <h1>🔥 Combos da Semana</h1>
+          <p>As melhores ofertas para você aproveitar o sabor da Sottile em casa.</p>
+        </div>
+      </div>
+
+      <div class="container">
+        <!-- Combo Casal -->
+        <article class="promo-card">
+          <img src="assets/images/combo_week.png" alt="Combo Casal" class="promo-card__img">
+          <div class="promo-card__content">
+            <span class="promo-card__tag">O MAIS PEDIDO</span>
+            <h2>Combo Casal</h2>
+            <p>1 Pizza Média (qualquer sabor) + 1 Refrigerante de 2 Litros. A combinação perfeita para o seu jantar.</p>
+            <div class="promo-card__price">R$ 69,90</div>
+            <a href="delivery.html" class="btn btn--primary btn--round">Aproveitar agora!</a>
+          </div>
+        </article>
+
+        <!-- Combo Família -->
+        <article class="promo-card">
+          <img src="assets/images/combo_week.png" alt="Combo Família" class="promo-card__img">
+          <div class="promo-card__content">
+            <span class="promo-card__tag">PARA TODA A FAMÍLIA</span>
+            <h2>Combo Família</h2>
+            <p>2 Pizzas Grandes (qualquer sabor) + 1 Refrigerante de 2 Litros. Diversão garantida para todos!</p>
+            <div class="promo-card__price">R$ 119,90</div>
+            <a href="delivery.html" class="btn btn--primary btn--round">Aproveitar agora!</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <h3>Endereço</h3>
+            <address>
+              Rua General Labatut, 26<br />
+              Barris, Salvador - BA<br />
+              40070-100, Brasil
+            </address>
+          </div>
+          <div>
+            <h3>Contato</h3>
+            <p><a href="mailto:contato@sottilepizzaria.com.br">contato@sottilepizzaria.com.br</a></p>
+            <p><a href="tel:+5571987394519">+55 71 98739-4519</a></p>
+          </div>
+          <div>
+            <h3>Links</h3>
+            <p><a href="index.html">Início</a></p>
+            <p><a href="delivery.html">Fazer Pedido</a></p>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <span>© Sottile — Todos os direitos reservados.</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,66 @@
+/**
+ * Estilos específicos da página inicial (index.html)
+ */
+.home-ifood {
+  background: var(--color-bg-section);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Carrossel de GIFs */
+.gif-carousel-container {
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+  padding: 1rem 0;
+  border-top: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.gif-carousel-track {
+  display: flex;
+  width: calc(675px * 12); /* Largura total dos slides duplicados (675 * 12) */
+  animation: scroll 30s linear infinite;
+}
+
+.gif-slide {
+  width: 675px;
+  height: 450px;
+  flex-shrink: 0;
+  padding: 0 20px;
+}
+
+.gif-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-675px * 6)); }
+}
+
+.home-products .card-grid {
+
+  margin-top: var(--space-lg);
+}
+
+/* Ilustrações da Home */
+.two-col__media {
+  background: #fdfdfd; /* Fundo mais limpo para as ilustrações */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.two-col__media img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+

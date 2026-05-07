@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Entre em contato com a Sottile Pizzaria em Salvador." />
+    <title>Contato — Sottile Pizzaria</title>
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/components.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="site-logo" href="index.html">
+          <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
+        </a>
+        <nav class="site-nav" aria-label="Principal">
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="area-entrega.html">Área de Entrega</a></li>
+            <li><a href="promocoes.html">Promoções</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="contato.html" aria-current="page">Contato</a></li>
+            <li><a href="delivery.html">Delivery</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="container page-hero">
+        <h1>Contato</h1>
+        <p>
+          Use o formulário abaixo ou os canais diretos. Substitua o atributo <code>action</code> do formulário pelo
+          endpoint real.
+        </p>
+      </div>
+      <div class="container section section--no-top">
+        <div class="newsletter newsletter--wide">
+          <h2>Envie uma mensagem</h2>
+          <form class="form-block" action="#" method="post">
+            <label for="nome" class="visually-hidden">Nome</label>
+            <input id="nome" type="text" name="nome" placeholder="Seu nome" required />
+            <label for="email-contato" class="visually-hidden">E-mail</label>
+            <input id="email-contato" type="email" name="email" placeholder="seu@email.com" required />
+            <label for="mensagem" class="visually-hidden">Mensagem</label>
+            <textarea id="mensagem" name="mensagem" rows="4" placeholder="Sua mensagem" required></textarea>
+            <button class="btn btn--primary" type="submit">Enviar</button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <h3>Endereço</h3>
+            <address>
+              Rua General Labatut, 26<br />
+              Barris, Salvador - BA<br />
+              40070-100, Brasil
+            </address>
+          </div>
+          <div>
+            <h3>Contato</h3>
+            <p><a href="mailto:contato@sottilepizzaria.com.br">contato@sottilepizzaria.com.br</a></p>
+            <p><a href="tel:+5571987394519">+55 71 98739-4519</a></p>
+          </div>
+          <div>
+            <h3>Links</h3>
+            <p><a href="index.html">Início</a></p>
+          </div>
+        </div>
+        <div class="site-footer__bottom">
+          <span>© Sottile — Todos os direitos reservados.</span>
+          <a href="#">Política de Privacidade</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
