@@ -49,8 +49,57 @@ const sizePrices = {
     'Gigante': 1.3
 };
 
-const SHIPPING_FEE = 10.00;
+/**
+ * Taxas de frete por bairro em Salvador, partindo dos Barris.
+ * Chaves em minúsculas para facilitar comparação case-insensitive.
+ */
+const SHIPPING_RATES = {
+    'barris': 0,
+    'garcia': 3,
+    'canela': 3,
+    'piedade': 5,
+    'politeama': 5,
+    'campo grande': 5,
+    'nazaré': 5,
+    'nazare': 5,
+    'vitória': 7,
+    'vitoria': 7,
+    'graça': 8,
+    'graca': 8,
+    'federação': 8,
+    'federacao': 8,
+    'centro': 7,
+    'dois de julho': 6,
+    'tororó': 6,
+    'tororo': 6,
+    'mouraria': 6,
+    'saúde': 7,
+    'saude': 7,
+    'santo antônio': 7,
+    'santo antonio': 7,
+    'comércio': 7,
+    'comercio': 7,
+    'barra': 10,
+    'ondina': 10,
+    'rio vermelho': 12
+};
+const DEFAULT_SHIPPING_FEE = 10.00;
+
+/**
+ * Detecta o bairro no endereço digitado e retorna a taxa de frete correspondente.
+ * @param {string} address - Endereço completo digitado pelo usuário.
+ * @returns {number} - Taxa de frete em reais.
+ */
+function getShippingFee(address) {
+    const lower = address.toLowerCase();
+    for (const [bairro, taxa] of Object.entries(SHIPPING_RATES)) {
+        if (lower.includes(bairro)) return taxa;
+    }
+    return DEFAULT_SHIPPING_FEE;
+}
+
 let cart = [];
+let currentShippingFee = DEFAULT_SHIPPING_FEE;
 
 /**
  * Função de inicialização do sistema de delivery.
@@ -344,10 +393,17 @@ function updateCart() {
         cartItems.appendChild(li);
     });
 
-    const finalTotal = subtotal > 0 ? subtotal + SHIPPING_FEE : 0;
+    const finalTotal = subtotal > 0 ? subtotal + currentShippingFee : 0;
 
     if (cartSubtotal) cartSubtotal.textContent = subtotal.toFixed(2);
-    if (cartShipping) cartShipping.textContent = subtotal > 0 ? SHIPPING_FEE.toFixed(2) : "0.00";
+    if (cartShipping) {
+        const shippingLabel = currentShippingFee === 0 && subtotal > 0
+            ? '🎉 Grátis!'
+            : subtotal > 0 ? currentShippingFee.toFixed(2) : '0.00';
+        cartShipping.textContent = typeof shippingLabel === 'string' && shippingLabel.includes('Grátis')
+            ? shippingLabel
+            : shippingLabel;
+    }
     cartTotal.textContent = finalTotal.toFixed(2);
 
     const mobileCount = document.getElementById('mobile-cart-count');
@@ -428,19 +484,24 @@ function updatePaymentSubOptions() {
 }
 
 /**
- * Coleta todos os dados do pedido, valida o endereço e o pagamento, 
- * e simula o envio do pedido com um resumo final.
+ * Coleta todos os dados do pedido, valida o endereço e o pagamento,
+ * monta uma mensagem formatada e abre o WhatsApp da Sottile.
  */
 function finalizeOrder() {
-    const address = document.getElementById('delivery-address').value;
+    const addressInput = document.getElementById('delivery-address');
+    const address = addressInput.value;
+
     if (!address || address.trim().length < 5) {
-        alert('Por favor, insira o endereço completo para entrega!');
+        addressInput.focus();
+        addressInput.style.borderColor = '#b31217';
+        showToast('Por favor, insira o endereço completo para entrega!', 'error');
         return;
     }
+    addressInput.style.borderColor = '';
 
     const paymentType = document.querySelector('input[name="payment-type"]:checked');
     if (!paymentType) {
-        alert('Selecione um método de pagamento!');
+        showToast('Selecione um método de pagamento!', 'error');
         return;
     }
 
@@ -450,26 +511,81 @@ function finalizeOrder() {
     if (paymentMethod === 'online') {
         const onlineMethod = document.querySelector('input[name="online-method"]:checked');
         if (!onlineMethod) {
-            alert('Selecione a forma de pagamento online!');
+            showToast('Selecione a forma de pagamento online!', 'error');
             return;
         }
         subMethod = onlineMethod.value;
     } else {
         const deliveryMethod = document.querySelector('input[name="delivery-method"]:checked');
         if (!deliveryMethod) {
-            alert('Selecione a forma de pagamento na entrega!');
+            showToast('Selecione a forma de pagamento na entrega!', 'error');
             return;
         }
         subMethod = deliveryMethod.value;
     }
 
-    const total = document.getElementById('cart-total').textContent;
-    alert(`🚀 Pedido enviado com sucesso!\n\nEndereço: ${address}\nTotal: R$ ${total} (Incluindo R$ 10,00 de frete)\nPagamento: ${paymentMethod === 'online' ? 'Online' : 'Na Entrega'} (${subMethod.toUpperCase()})`);
+    // Detecta frete pelo bairro no endereço
+    const shippingFee = getShippingFee(address);
+    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+    const total = subtotal + shippingFee;
+
+    const paymentLabels = {
+        'pix': 'Pix', 'cartao': 'Cartão', 'dinheiro': 'Dinheiro'
+    };
+    const paymentTypeLabel = paymentMethod === 'online' ? 'Online' : 'Na Entrega';
+    const subMethodLabel = paymentLabels[subMethod] || subMethod.toUpperCase();
+
+    // Monta a lista de itens do pedido
+    const itemLines = cart.map(i => `  • ${i.name} — R$ ${i.price.toFixed(2)}`).join('%0A');
+    const freteLabel = shippingFee === 0 ? 'Grátis 🎉' : `R$ ${shippingFee.toFixed(2)}`;
+
+    const msg = [
+        `*🍕 Novo Pedido — Sottile Pizzaria*`,
+        ``,
+        `*Itens do pedido:*`,
+        itemLines,
+        ``,
+        `*Subtotal:* R$ ${subtotal.toFixed(2)}`,
+        `*Frete:* ${freteLabel}`,
+        `*Total:* R$ ${total.toFixed(2)}`,
+        ``,
+        `*Endereço de entrega:* ${address}`,
+        `*Forma de pagamento:* ${paymentTypeLabel} — ${subMethodLabel}`,
+        ``,
+        `_Pedido feito pelo site sottilepizzaria.com.br_`
+    ].join('%0A');
+
+    const phone = '5571986711646';
+    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
 
     cart = [];
-    document.getElementById('delivery-address').value = '';
+    currentShippingFee = DEFAULT_SHIPPING_FEE;
+    addressInput.value = '';
     updateCart();
     hideCheckout();
+    showToast('Pedido enviado! Continue no WhatsApp. 🚀', 'success');
+}
+
+/**
+ * Exibe uma notificação toast não-bloqueante na tela.
+ * @param {string} msg - Texto da notificação.
+ * @param {'success'|'error'} type - Tipo visual do toast.
+ */
+function showToast(msg, type = 'success') {
+    const existing = document.getElementById('sottile-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'sottile-toast';
+    toast.className = `sottile-toast sottile-toast--${type}`;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('sottile-toast--visible'));
+    setTimeout(() => {
+        toast.classList.remove('sottile-toast--visible');
+        setTimeout(() => toast.remove(), 400);
+    }, 3500);
 }
 
 /**

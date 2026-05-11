@@ -8,6 +8,7 @@
       content="Peça sua pizza Sottile online. Delivery rápido em Salvador."
     />
     <title>Delivery — Sottile Pizzaria</title>
+    <link rel="icon" type="image/png" href="assets/images/pizza_favicon.png" />
     <link rel="stylesheet" href="css/variables.css" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/layout.css" />
@@ -20,14 +21,19 @@
         <a class="site-logo" href="index.html">
           <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
         </a>
-        <nav class="site-nav" aria-label="Principal">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-nav">
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Principal">
           <ul>
             <li><a href="sobre.html">Sobre</a></li>
             <li><a href="area-entrega.html">Área de Entrega</a></li>
             <li><a href="promocoes.html">Promoções</a></li>
             <li><a href="blog.html">Blog</a></li>
             <li><a href="contato.html">Contato</a></li>
-            <li><a href="delivery.html" class="active">Delivery</a></li>
+            <li><a href="delivery.html" aria-current="page">Delivery</a></li>
           </ul>
         </nav>
       </div>
@@ -160,7 +166,7 @@
           <div>
             <h3>Contato</h3>
             <p><a href="mailto:contato@sottilepizzaria.com.br">contato@sottilepizzaria.com.br</a></p>
-            <p><a href="tel:+5571987394519">+55 71 98739-4519</a></p>
+            <p><a href="tel:+5571986711646">+55 71 98671-1646</a></p>
           </div>
           <div>
             <h3>Funcionamento</h3>
@@ -174,6 +180,21 @@
       </div>
     </footer>
 
+    <!-- WhatsApp floating button -->
+    <a href="https://wa.me/5571986711646" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Falar pelo WhatsApp">
+      📲
+    </a>
+
     <script src="js/delivery.js"></script>
+    <script>
+      const menuToggle = document.getElementById('menu-toggle');
+      const siteNav = document.getElementById('site-nav');
+      if (menuToggle && siteNav) {
+        menuToggle.addEventListener('click', () => {
+          const isOpen = siteNav.classList.toggle('is-open');
+          menuToggle.setAttribute('aria-expanded', isOpen);
+        });
+      }
+    </script>
   </body>
 </html>

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Entre em contato com a Sottile Pizzaria em Salvador." />
     <title>Contato — Sottile Pizzaria</title>
+    <link rel="icon" type="image/png" href="assets/images/pizza_favicon.png" />
     <link rel="stylesheet" href="css/variables.css" />
     <link rel="stylesheet" href="css/base.css" />
     <link rel="stylesheet" href="css/layout.css" />
@@ -16,7 +17,12 @@
         <a class="site-logo" href="index.html">
           <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
         </a>
-        <nav class="site-nav" aria-label="Principal">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-nav">
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+          <span class="menu-toggle__bar"></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="Principal">
           <ul>
             <li><a href="sobre.html">Sobre</a></li>
             <li><a href="area-entrega.html">Área de Entrega</a></li>
@@ -32,10 +38,7 @@
     <main class="site-main">
       <div class="container page-hero">
         <h1>Contato</h1>
-        <p>
-          Use o formulário abaixo ou os canais diretos. Substitua o atributo <code>action</code> do formulário pelo
-          endpoint real.
-        </p>
+        <p>Use o formulário abaixo ou os canais diretos para falar com a Sottile.</p>
       </div>
       <div class="container section section--no-top">
         <div class="newsletter newsletter--wide">
@@ -80,5 +83,21 @@
         </div>
       </div>
     </footer>
+
+    <!-- WhatsApp floating button -->
+    <a href="https://wa.me/5571986711646" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Falar pelo WhatsApp">
+      📲
+    </a>
+
+    <script>
+      const menuToggle = document.getElementById('menu-toggle');
+      const siteNav = document.getElementById('site-nav');
+      if (menuToggle && siteNav) {
+        menuToggle.addEventListener('click', () => {
+          const isOpen = siteNav.classList.toggle('is-open');
+          menuToggle.setAttribute('aria-expanded', isOpen);
+        });
+      }
+    </script>
   </body>
 </html>
