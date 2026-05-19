@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Bairros e regiões atendidas pelo delivery da Sottile Pizzaria em Salvador." />
   <title>Área de Entrega — Sottile Pizzaria</title>
+  <link rel="icon" type="image/png" href="assets/images/pizza_favicon.png" />
   <link rel="stylesheet" href="css/variables.css" />
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/layout.css" />
@@ -82,7 +83,12 @@
       <a class="site-logo" href="index.html">
         <img class="site-logo__img" src="assets/images/logo.png" alt="Sottile Pizzaria" />
       </a>
-      <nav class="site-nav" aria-label="Principal">
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="site-nav">
+        <span class="menu-toggle__bar"></span>
+        <span class="menu-toggle__bar"></span>
+        <span class="menu-toggle__bar"></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Principal">
         <ul>
           <li><a href="sobre.html">Sobre</a></li>
           <li><a href="area-entrega.html" aria-current="page">Área de Entrega</a></li>
@@ -130,6 +136,19 @@
         <div class="neighborhood-item">Santo Antônio</div>
         <div class="neighborhood-item">Comércio</div>
       </div>
+
+      <!-- Mapa Google Maps -->
+      <div style="margin-top:3rem;">
+        <h2 class="section__title" style="text-align:left;margin-bottom:1.5rem;">📍 Nossa Localização</h2>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d975.3048764428!2d-38.515085!3d-12.985284!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x716042ab82e1bbb%3A0x8e07bea649a8b8f7!2sR.%20Gen.%20Labatut%2C%2026%20-%20Barris%2C%20Salvador%20-%20BA%2C%2040070-100!5e0!3m2!1spt-BR!2sbr!4v1715437200000!5m2!1spt-BR!2sbr"
+          width="100%" height="380"
+          style="border:0; border-radius:20px; box-shadow: 0 8px 24px rgba(0,0,0,0.1);"
+          allowfullscreen loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="Localização da Sottile Pizzaria — Rua General Labatut, 26, Barris, Salvador-BA">
+        </iframe>
+      </div>
     </div>
   </main>
 
@@ -160,6 +179,22 @@
       </div>
     </div>
   </footer>
+
+  <!-- WhatsApp floating button -->
+  <a href="https://wa.me/5571986711646" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Falar pelo WhatsApp">
+    📲
+  </a>
+
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const siteNav = document.getElementById('site-nav');
+    if (menuToggle && siteNav) {
+      menuToggle.addEventListener('click', () => {
+        const isOpen = siteNav.classList.toggle('is-open');
+        menuToggle.setAttribute('aria-expanded', isOpen);
+      });
+    }
+  </script>
 </body>
 
 </html>
