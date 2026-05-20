@@ -85,17 +85,42 @@ const SHIPPING_RATES = {
 };
 const DEFAULT_SHIPPING_FEE = 10.00;
 
+/** Ordem decrescente por tamanho do nome do bairro (evita match parcial curto). */
+const SHIPPING_NEIGHBORHOODS = Object.keys(SHIPPING_RATES).sort((a, b) => b.length - a.length);
+
+/**
+ * Escapa caracteres especiais para uso em RegExp.
+ * @param {string} value
+ * @returns {string}
+ */
+function escapeRegExp(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
  * Detecta o bairro no endereço digitado e retorna a taxa de frete correspondente.
+ * Compara bairros como tokens delimitados (espaço, vírgula, hífen, ponto).
  * @param {string} address - Endereço completo digitado pelo usuário.
  * @returns {number} - Taxa de frete em reais.
  */
 function getShippingFee(address) {
-    const lower = address.toLowerCase();
-    for (const [bairro, taxa] of Object.entries(SHIPPING_RATES)) {
-        if (lower.includes(bairro)) return taxa;
+    const lower = address.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '');
+    for (const bairro of SHIPPING_NEIGHBORHOODS) {
+        const normalized = bairro.normalize('NFD').replace(/\p{M}/gu, '');
+        const pattern = new RegExp(`(?:^|[\\s,.\\-/])${escapeRegExp(normalized)}(?:[\\s,.\\-/]|$)`, 'i');
+        if (pattern.test(lower)) return SHIPPING_RATES[bairro];
     }
     return DEFAULT_SHIPPING_FEE;
+}
+
+/**
+ * Atualiza a taxa de frete exibida no carrinho conforme o endereço digitado.
+ */
+function syncShippingFromAddress() {
+    const addressInput = document.getElementById('delivery-address');
+    const address = addressInput ? addressInput.value.trim() : '';
+    currentShippingFee = address.length >= 3 ? getShippingFee(address) : DEFAULT_SHIPPING_FEE;
+    updateCart();
 }
 
 let cart = [];
@@ -133,6 +158,12 @@ function setupEventListeners() {
 
     const payDelivery = document.getElementById('payment-delivery');
     if (payDelivery) payDelivery.addEventListener('change', updatePaymentSubOptions);
+
+    const addressInput = document.getElementById('delivery-address');
+    if (addressInput) {
+        addressInput.addEventListener('input', syncShippingFromAddress);
+        addressInput.addEventListener('change', syncShippingFromAddress);
+    }
 }
 
 /**
@@ -397,12 +428,9 @@ function updateCart() {
 
     if (cartSubtotal) cartSubtotal.textContent = subtotal.toFixed(2);
     if (cartShipping) {
-        const shippingLabel = currentShippingFee === 0 && subtotal > 0
+        cartShipping.textContent = currentShippingFee === 0 && subtotal > 0
             ? '🎉 Grátis!'
             : subtotal > 0 ? currentShippingFee.toFixed(2) : '0.00';
-        cartShipping.textContent = typeof shippingLabel === 'string' && shippingLabel.includes('Grátis')
-            ? shippingLabel
-            : shippingLabel;
     }
     cartTotal.textContent = finalTotal.toFixed(2);
 
@@ -449,11 +477,14 @@ function removeFromCart(index) {
  */
 function showCheckout() {
     if (cart.length === 0) {
-        alert('Seu carrinho está vazio!');
+        showToast('Seu carrinho está vazio!', 'error');
         return;
     }
     const modal = document.getElementById('checkout-modal');
-    if (modal) modal.style.display = 'flex';
+    if (modal) {
+        syncShippingFromAddress();
+        modal.style.display = 'flex';
+    }
     const sidebar = document.querySelector('.order-sidebar');
     if (sidebar) sidebar.classList.remove('active');
 }
@@ -524,8 +555,10 @@ function finalizeOrder() {
         subMethod = deliveryMethod.value;
     }
 
-    // Detecta frete pelo bairro no endereço
-    const shippingFee = getShippingFee(address);
+    currentShippingFee = getShippingFee(address);
+    updateCart();
+
+    const shippingFee = currentShippingFee;
     const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
     const total = subtotal + shippingFee;
 
@@ -535,28 +568,32 @@ function finalizeOrder() {
     const paymentTypeLabel = paymentMethod === 'online' ? 'Online' : 'Na Entrega';
     const subMethodLabel = paymentLabels[subMethod] || subMethod.toUpperCase();
 
-    // Monta a lista de itens do pedido
-    const itemLines = cart.map(i => `  • ${i.name} — R$ ${i.price.toFixed(2)}`).join('%0A');
+    const itemLines = cart.map(i => `  • ${i.name} — R$ ${i.price.toFixed(2)}`).join('\n');
     const freteLabel = shippingFee === 0 ? 'Grátis 🎉' : `R$ ${shippingFee.toFixed(2)}`;
 
     const msg = [
         `*🍕 Novo Pedido — Sottile Pizzaria*`,
-        ``,
+        '',
         `*Itens do pedido:*`,
         itemLines,
-        ``,
+        '',
         `*Subtotal:* R$ ${subtotal.toFixed(2)}`,
         `*Frete:* ${freteLabel}`,
         `*Total:* R$ ${total.toFixed(2)}`,
-        ``,
+        '',
         `*Endereço de entrega:* ${address}`,
         `*Forma de pagamento:* ${paymentTypeLabel} — ${subMethodLabel}`,
-        ``,
+        '',
         `_Pedido feito pelo site sottilepizzaria.com.br_`
-    ].join('%0A');
+    ].join('\n');
 
     const phone = '5571986711646';
-    window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
+    const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    const waWindow = window.open(waUrl, '_blank');
+    if (!waWindow) {
+        showToast('Não foi possível abrir o WhatsApp. Verifique o bloqueador de pop-ups.', 'error');
+        return;
+    }
 
     cart = [];
     currentShippingFee = DEFAULT_SHIPPING_FEE;
